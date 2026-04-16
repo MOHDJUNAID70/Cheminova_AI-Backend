@@ -5,6 +5,7 @@ import com.example.Cheminova.DTOs.Response.AIResponse;
 import com.example.Cheminova.Model.LearningPath;
 import com.example.Cheminova.Model.Users;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,12 +15,11 @@ import java.util.List;
 public interface LearningPathMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "user", source = "user")
-    @Mapping(target = "suggestedGoal", source = "response.suggested_goal")
+    @Mapping(target = "suggestedGoal", expression = "java(cleanString(response.getSuggested_goal()))")
     @Mapping(target = "confidenceScore", source = "response.confidence_score")
     @Mapping(target = "skillMatchPercentage", source = "response.skill_match_percentage")
-    @Mapping(target = "matchAnalysis", source = "response.match_analysis")
+    @Mapping(target = "matchAnalysis", expression = "java(cleanString(response.getMatch_analysis()))")
     @Mapping(target = "estimatedTotalHours", source = "response.timeline_estimation.estimated_total_hours")
     @Mapping(target = "estimatedDurationWeeks", source = "response.timeline_estimation.estimated_duration_weeks")
     @Mapping(target = "topCareerMatches", expression = "java(toJson(response.getTop_career_matches()))")
@@ -29,6 +29,14 @@ public interface LearningPathMapper {
     @Mapping(target = "recommendedCourses", expression = "java(toJson(response.getRecommended_courses()))")
 
     LearningPath toEntity(AIResponse response, Users user);
+
+    default String cleanString(String value) {
+        try {
+            return new ObjectMapper().readValue(value, String.class);
+        } catch (Exception e) {
+            return value;
+        }
+    }
 
     default String toJson(Object obj) {
         try {

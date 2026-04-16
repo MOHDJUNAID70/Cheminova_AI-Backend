@@ -8,9 +8,13 @@ import com.example.Cheminova.Model.LearningPath;
 import com.example.Cheminova.Model.Users;
 import com.example.Cheminova.Repository.LearningPathRepository;
 import com.example.Cheminova.Repository.UserRepository;
+import com.example.Cheminova.Specification.LearningPathSpecification;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -58,5 +62,10 @@ public class AIService {
 
         List<LearningPath> generatedPath=learningPathRepository.findAllByUser(user);
         return generatedPath.stream().map(learningPathMapper::toResponse).toList();
+    }
+
+    public Page<AIResponse> AllGeneratedPath(Pageable pageable, String goal) {
+        Specification<LearningPath> spec = LearningPathSpecification.getSpecification(goal);
+        return learningPathRepository.findAll(spec, pageable).map(learningPathMapper::toResponse);
     }
 }
