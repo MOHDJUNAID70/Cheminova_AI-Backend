@@ -19,8 +19,8 @@ public class CorsConfig {
                         .allowedOrigins(
                                 "http://localhost:5173",
                                 "https://cheminova-frontend.vercel.app")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                         .allowCredentials(true)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowedHeaders("*");
             }
         };
