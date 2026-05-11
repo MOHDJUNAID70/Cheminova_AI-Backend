@@ -43,15 +43,4 @@ public class AIController {
         return ResponseEntity.ok("Learning path with id " + id + " has been deleted.");
     }
 
-    @GetMapping("/all-generated-path")
-    public Page<AIResponse> AllGeneratedPath(
-            @RequestParam(defaultValue = "1", required = false) int page,
-            @RequestParam(defaultValue = "5", required = false) int size,
-            @RequestParam(defaultValue = "createdAt", required = false) String sortBy,
-            @RequestParam(required = false) String goal
-    )
-    {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
-        return aiService.AllGeneratedPath(pageable, goal);
-    }
 }

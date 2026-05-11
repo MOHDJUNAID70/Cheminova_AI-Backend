@@ -27,12 +27,6 @@ public class UserController  {
         return ResponseEntity.ok("Profile updated successfully");
     }
 
-    @DeleteMapping("/deactivate-profile")
-    public ResponseEntity<String> deleteProfile(@RequestParam("Id") Integer id) {
-        userService.deleteProfileById(id);
-        return ResponseEntity.ok("User Profile Deactivated successfully");
-    }
-
     @DeleteMapping("/delete-account")
     public ResponseEntity<String> deleteAccount(@RequestHeader("Authorization") String token, Authentication authentication) {
         String userToken = token.substring(7);

@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
@@ -27,7 +29,17 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RegisterRequest request) {
         authService.register(request);
-        return new ResponseEntity<>("Register successfully", HttpStatus.CREATED);
+        return new ResponseEntity<>("Register successfully, Please check your email for OTP Verification.", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> body) {
+        return authService.verifyOtp(body.get("email"), body.get("otp"));
+    }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<?> resendOtp(@RequestBody Map<String, String> body) {
+        return authService.resendOtp(body.get("email"));
     }
 
     @PostMapping("/login")

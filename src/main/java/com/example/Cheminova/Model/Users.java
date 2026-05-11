@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,10 @@ public class Users {
 
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    private boolean verified=false;
+    private String otp;
+    private LocalDateTime otpExpiration;
 
     @OneToMany(
             mappedBy = "user",

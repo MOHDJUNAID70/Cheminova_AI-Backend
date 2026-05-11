@@ -7,13 +7,17 @@ import com.example.Cheminova.Exception.CustomException;
 import com.example.Cheminova.JWT.JwtService;
 import com.example.Cheminova.Mapper.UserMapper;
 import com.example.Cheminova.Model.Users;
+import com.example.Cheminova.OTP.otpGenerator;
 import com.example.Cheminova.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class AuthService {
@@ -23,6 +27,12 @@ public class AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private otpGenerator otpGenerator;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -38,6 +48,8 @@ public class AuthService {
             throw new CustomException("Email already Exist");
         }
 
+        String otp= otpGenerator.generateOtp();
+
         Users user = new Users();
         user.setName(request.getName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -47,12 +59,75 @@ public class AuthService {
         user.setAddress(request.getAddress());
         user.setRole(request.getRole());
         user.setStatus(UserStatus.ACTIVE);
+        user.setOtp(otp);
+        user.setOtpExpiration(LocalDateTime.now().plusMinutes(10));
+        user.setVerified(false);
         userRepository.save(user);
+
+        // Send OTP email
+        emailService.sendOtpMail(user.getEmail(), otp);
+
+    }
+
+    // VERIFY OTP
+    public ResponseEntity<?> verifyOtp(String email, String otp) {
+
+        Users user = userRepository.findByEmail(email);
+
+        // check if already verified
+        if (user.isVerified()) {
+            return ResponseEntity.badRequest().body("Email already verified");
+        }
+
+        // check OTP expiry
+        if (LocalDateTime.now().isAfter(user.getOtpExpiration())
+        ) {
+            return ResponseEntity.badRequest().body("OTP has expired. Please request a new one.");
+        }
+
+        // check OTP match
+        if (!user.getOtp().equals(otp)) {
+            return ResponseEntity.badRequest().body("Invalid OTP");
+        }
+
+        // mark as verified
+        user.setVerified(true);
+        user.setOtp(null);           // clear OTP
+        user.setOtpExpiration(null);     // clear expiry
+        userRepository.save(user);
+
+        emailService.sendSuccessMail(email);
+
+        return ResponseEntity.ok("Email verified successfully! You can now login.");
+    }
+
+    // RESEND OTP
+    public ResponseEntity<?> resendOtp(String email) {
+
+        Users user = userRepository.findByEmail(email);
+
+        if (user.isVerified()) {
+            return ResponseEntity.badRequest().body("Email already verified");
+        }
+
+        // generate new OTP
+        String newOtp = otpGenerator.generateOtp();
+        user.setOtp(newOtp);
+        user.setOtpExpiration(LocalDateTime.now().plusMinutes(10));
+        userRepository.save(user);
+
+        emailService.sendOtpMail(email, newOtp);
+
+        return ResponseEntity.ok("New OTP sent to your email.");
     }
 
     @Transactional
     public String verifyUser(LoginRequest request) {
         Users user=userRepository.findByEmail(request.getEmail());
+
+        if(!user.isVerified()){
+            throw new CustomException("Please verify your email first.");
+        }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
