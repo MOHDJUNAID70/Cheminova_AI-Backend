@@ -2,6 +2,8 @@ package com.example.Cheminova.JWT;
 
 import com.example.Cheminova.Exception.CustomException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -58,14 +60,23 @@ public class JwtService {
     }
 
     public boolean validToken(String jwtToken, UserDetails userDetails) {
-        String username = extractUserName(jwtToken);
+        try {
+            String username = extractUserName(jwtToken);
 
-        return username.equals(userDetails.getUsername())
-                && !isTokenExpired(jwtToken);
+            return username.equals(userDetails.getUsername())
+                    && !isTokenExpired(jwtToken);
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        try {
+            return extractExpiration(token).before(new Date());
+        }
+        catch(ExpiredJwtException e) {
+            return true;
+        }
     }
 
     public Date extractExpiration(String token) {
