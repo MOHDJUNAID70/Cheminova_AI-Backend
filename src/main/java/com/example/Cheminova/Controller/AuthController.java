@@ -5,6 +5,7 @@ import com.example.Cheminova.DTOs.Request.RegisterRequest;
 import com.example.Cheminova.JWT.JwtService;
 import com.example.Cheminova.Service.AuthService;
 import com.example.Cheminova.Service.TokenBlacklistService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentication Controller", description = "Endpoints for user registration, login, OTP verification, and logout")
 public class AuthController {
 
     @Autowired

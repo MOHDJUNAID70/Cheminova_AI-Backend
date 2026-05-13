@@ -4,6 +4,7 @@ import com.example.Cheminova.DTOs.Request.UpdateProfileRequest;
 import com.example.Cheminova.DTOs.Response.UserResponse;
 import com.example.Cheminova.Repository.UserRepository;
 import com.example.Cheminova.Service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "User Controller", description = "Endpoints for user profile management and account deletion")
 public class UserController  {
 
     @Autowired

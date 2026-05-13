@@ -29,13 +29,13 @@ public class SwaggerConfig {
                                         .bearerFormat("JWT")))
                 .info(
                     new Info()
-                        .title("Cheminova API")
+                        .title("CheminNova API")
                         .version("1.0")
                         .contact(
                                 new Contact()
                                         .name("Mohd Junaid")
                         )
-                        .description("API documentation for Cheminova application"))
+                        .description("API documentation for CheminNova application"))
                 .servers(
                         List.of(
                                 new Server()

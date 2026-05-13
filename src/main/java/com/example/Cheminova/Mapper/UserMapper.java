@@ -1,6 +1,7 @@
 package com.example.Cheminova.Mapper;
 
 import com.example.Cheminova.DTOs.Request.UpdateProfileRequest;
+import com.example.Cheminova.DTOs.Response.UserDetailToAdmin;
 import com.example.Cheminova.DTOs.Response.UserResponse;
 import com.example.Cheminova.Model.Users;
 import org.mapstruct.BeanMapping;
@@ -15,4 +16,6 @@ public interface UserMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
     void updateProfileToUser(UpdateProfileRequest request, @MappingTarget Users user);
 
+
+    UserDetailToAdmin toUserDetailToAdmin(Users users);
 }

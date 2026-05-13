@@ -1,15 +1,21 @@
 package com.example.Cheminova.Service;
 
 import com.example.Cheminova.DTOs.Request.UpdateProfileRequest;
+import com.example.Cheminova.DTOs.Response.UserDetailToAdmin;
 import com.example.Cheminova.DTOs.Response.UserResponse;
+import com.example.Cheminova.Enum.Role;
 import com.example.Cheminova.Enum.UserStatus;
 import com.example.Cheminova.Exception.CustomException;
 import com.example.Cheminova.JWT.JwtService;
 import com.example.Cheminova.Mapper.UserMapper;
 import com.example.Cheminova.Model.Users;
 import com.example.Cheminova.Repository.UserRepository;
+import com.example.Cheminova.Specification.UsersSpecification;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +34,7 @@ public class UserService {
     private TokenBlacklistService blacklistService;
 
 
+
     public UserResponse getProfile(String name) {
         Users user=userRepository.findByEmail(name);
 
@@ -42,6 +49,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void deleteProfileById(Integer id) {
         Users user=userRepository.findById(id).orElseThrow(
                 ()-> new CustomException("User not found with user_id: " + id)
@@ -50,6 +58,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void deleteAccount(String name, String token) {
         Users user=userRepository.findByEmail(name);
 
@@ -58,5 +67,10 @@ public class UserService {
         blacklistService.blacklistToken(token, expirationTime);
 
         userRepository.delete(user);
+    }
+
+    public Page<UserDetailToAdmin> getAllUsers(Pageable pageable, String name, Integer minAge, Integer maxAge, Role role, UserStatus status) {
+        Specification<Users> spec= UsersSpecification.getSpecification(name, minAge, maxAge, role, status);
+        return userRepository.findAll(spec, pageable).map(userMapper::toUserDetailToAdmin);
     }
 }

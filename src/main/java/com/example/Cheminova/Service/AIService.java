@@ -53,6 +53,7 @@ public class AIService {
         Map<String, Integer> sortedSkills=new TreeMap<>(userInput.getSkills());
         String skills=objectMapper.writeValueAsString(sortedSkills);
 
+        // To handle to duplication
         LearningPath existPath=learningPathRepository.findByUserAndInputGoalAndInputDailyHoursAndInputSkills(
                 user,
                 userInput.getGoal(),

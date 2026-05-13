@@ -5,6 +5,7 @@ import com.example.Cheminova.DTOs.Response.AIResponse;
 import com.example.Cheminova.DTOs.Request.InputRequest;
 import com.example.Cheminova.Repository.LearningPathRepository;
 import com.example.Cheminova.Service.AIService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "AI Controller", description = "Endpoints for AI-generated learning paths")
 public class AIController {
 
     @Autowired
