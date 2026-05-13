@@ -6,6 +6,7 @@ import com.example.Cheminova.Model.LearningPath;
 import com.example.Cheminova.Model.Users;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.boot.internal.Target;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,6 +17,9 @@ public interface LearningPathMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", source = "user")
+    @Mapping(target = "inputSkills", source = "skills")
+    @Mapping(target = "inputGoal", source = "goal")
+    @Mapping(target = "inputDailyHours", source = "daily_study_hours")
     @Mapping(target = "suggestedGoal", expression = "java(cleanString(response.getSuggested_goal()))")
     @Mapping(target = "confidenceScore", source = "response.confidence_score")
     @Mapping(target = "skillMatchPercentage", source = "response.skill_match_percentage")
@@ -28,7 +32,7 @@ public interface LearningPathMapper {
     @Mapping(target = "learningPath", expression = "java(toJson(response.getLearning_path()))")
     @Mapping(target = "recommendedCourses", expression = "java(toJson(response.getRecommended_courses()))")
 
-    LearningPath toEntity(AIResponse response, Users user);
+    LearningPath toEntity(AIResponse response, Users user, String skills, String goal, Integer daily_study_hours);
 
     default String cleanString(String value) {
         try {

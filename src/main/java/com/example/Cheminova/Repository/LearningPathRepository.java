@@ -14,4 +14,6 @@ import java.util.List;
 public interface LearningPathRepository extends JpaRepository<LearningPath,Long>, JpaSpecificationExecutor<LearningPath> {
 
     List<LearningPath> findAllByUser(Users user);
+
+    LearningPath findByUserAndInputGoalAndInputDailyHoursAndInputSkills(Users user, String goal, Integer dailyStudyHours, String skills);
 }

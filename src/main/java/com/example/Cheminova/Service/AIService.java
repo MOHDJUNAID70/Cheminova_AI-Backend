@@ -17,10 +17,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.ObjectMapper;
+
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Service
 public class AIService {
@@ -38,9 +43,27 @@ public class AIService {
 
     @Value("${ai.server.url}")
     private String Base_url;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Transactional
     public AIResponse generateLearningPath(InputRequest userInput, String name) {
+        Users user=userRepository.findByEmail(name);
+
+        Map<String, Integer> sortedSkills=new TreeMap<>(userInput.getSkills());
+        String skills=objectMapper.writeValueAsString(sortedSkills);
+
+        LearningPath existPath=learningPathRepository.findByUserAndInputGoalAndInputDailyHoursAndInputSkills(
+                user,
+                userInput.getGoal(),
+                userInput.getDaily_study_hours(),
+                skills
+        );
+
+        if(existPath!=null){
+            return learningPathMapper.toResponse(existPath);
+        }
+
         String url = this.Base_url + "/generate-path";
 
         HttpHeaders headers = new HttpHeaders();
@@ -50,9 +73,11 @@ public class AIService {
 
         AIResponse response=restTemplate.postForEntity(url, entity, AIResponse.class).getBody();
 
-        Users user=userRepository.findByEmail(name);
+        if(response==null){
+            throw new CustomException("Failed to generate learning path. Please try again.");
+        }
 
-        learningPathRepository.save(learningPathMapper.toEntity(response, user));
+        learningPathRepository.save(learningPathMapper.toEntity(response, user, skills, userInput.getGoal(), userInput.getDaily_study_hours()));
 
         return response;
     }

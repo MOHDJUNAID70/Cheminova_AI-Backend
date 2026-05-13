@@ -36,6 +36,11 @@ public class LearningPath {
 
     private Double estimatedDurationWeeks;
 
+    @Column(columnDefinition = "TEXT")
+    private String inputSkills;    // JSON string of input skills and their levels
+    private String inputGoal;
+    private Integer inputDailyHours;
+
     // Store lists as JSON strings in DB
     @Column(columnDefinition = "TEXT")
     private String topCareerMatches;    // JSON string
