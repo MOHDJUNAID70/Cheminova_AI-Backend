@@ -11,12 +11,12 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
-    private String fromEmail;
+//    @Value("${spring.mail.username}")
+//    private String fromEmail;
 
     public void sendOtpMail(String toEmail, String otp){
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
+        message.setFrom("mohdjunaid706050@gmail.com");
         message.setTo(toEmail);
         message.setSubject("CheminNova - Email Verification OTP");
         message.setText(
@@ -32,7 +32,7 @@ public class EmailService {
 
     public void sendSuccessMail(String toEmail){
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
+        message.setFrom("mohdjunaid706050@gmail.com");
         message.setTo(toEmail);
         message.setSubject("CheminNova - Email Verification Success");
         message.setText(
