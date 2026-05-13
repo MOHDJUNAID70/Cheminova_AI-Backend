@@ -57,7 +57,6 @@ public class AuthService {
         user.setAge(request.getAge());
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());
-        user.setRole(request.getRole());
         user.setStatus(UserStatus.ACTIVE);
         user.setOtp(otp);
         user.setOtpExpiration(LocalDateTime.now().plusMinutes(10));

@@ -29,10 +29,6 @@ public class RegisterRequest {
     private String password;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    @NotNull
     @Column(nullable = false)
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Phone number must be between 10 and 15 digits and can start with +")
     private String phone;

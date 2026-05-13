@@ -44,6 +44,11 @@ public class Users {
     private String otp;
     private LocalDateTime otpExpiration;
 
+    @PrePersist
+    public void prePersist() {
+        role = Role.USER;
+    }
+
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
