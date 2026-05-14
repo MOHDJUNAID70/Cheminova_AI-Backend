@@ -1,12 +1,14 @@
 package com.example.Cheminova.DTOs.Response;
 
 
+import com.example.Cheminova.Model.Users;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 public class AIResponse {
+    private UserToAIResponse user;
     private String suggested_goal;
     private Double confidence_score;
     private List<CareerMatch> top_career_matches;
@@ -19,4 +21,5 @@ public class AIResponse {
     private LocalDateTime created_at;
 
     public Timeline timeline_estimation;
+
 }

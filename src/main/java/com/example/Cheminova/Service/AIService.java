@@ -90,8 +90,9 @@ public class AIService {
         return generatedPath.stream().map(learningPathMapper::toResponse).toList();
     }
 
-    public Page<AIResponse> AllGeneratedPath(Pageable pageable, String goal) {
-        Specification<LearningPath> spec = LearningPathSpecification.getSpecification(goal);
+    public Page<AIResponse> AllGeneratedPath(Pageable pageable, String goal, String name) {
+        Users user=userRepository.findByEmail(name);
+        Specification<LearningPath> spec = LearningPathSpecification.getSpecification(goal, user);
         return learningPathRepository.findAll(spec, pageable).map(learningPathMapper::toResponse);
     }
 }

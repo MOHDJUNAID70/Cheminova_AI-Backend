@@ -50,6 +50,7 @@ public interface LearningPathMapper {
         }
     }
 
+    @Mapping(target = "user", source = "learningPath.user")
     @Mapping(target = "suggested_goal", source = "learningPath.suggestedGoal")
     @Mapping(target = "confidence_score", source = "learningPath.confidenceScore")
     @Mapping(target = "skill_match_percentage", source = "learningPath.skillMatchPercentage")
@@ -79,4 +80,5 @@ public interface LearningPathMapper {
             throw new RuntimeException("Failed to parse JSON", e);
         }
     }
+
 }

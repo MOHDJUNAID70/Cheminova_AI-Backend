@@ -5,6 +5,7 @@ import com.example.Cheminova.DTOs.Response.UserDetailToAdmin;
 import com.example.Cheminova.DTOs.Response.UserResponse;
 import com.example.Cheminova.Enum.Role;
 import com.example.Cheminova.Enum.UserStatus;
+import com.example.Cheminova.Model.Users;
 import com.example.Cheminova.Repository.LearningPathRepository;
 import com.example.Cheminova.Repository.UserRepository;
 import com.example.Cheminova.Service.AIService;
@@ -57,11 +58,12 @@ public class AdminController {
             @RequestParam(defaultValue = "1", required = false) int page,
             @RequestParam(defaultValue = "5", required = false) int size,
             @RequestParam(defaultValue = "createdAt", required = false) String sortBy,
-            @RequestParam(required = false) String goal
-    )
+            @RequestParam(required = false) String goal,
+            @RequestParam(required = false) String name
+            )
     {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sortBy).descending());
-        return aiService.AllGeneratedPath(pageable, goal);
+        return aiService.AllGeneratedPath(pageable, goal, name);
     }
 
     @GetMapping("/stats")
