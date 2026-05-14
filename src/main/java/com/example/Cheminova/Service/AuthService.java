@@ -2,6 +2,7 @@ package com.example.Cheminova.Service;
 
 import com.example.Cheminova.DTOs.Request.LoginRequest;
 import com.example.Cheminova.DTOs.Request.RegisterRequest;
+import com.example.Cheminova.DTOs.Response.LoginResponse;
 import com.example.Cheminova.Enum.UserStatus;
 import com.example.Cheminova.Exception.CustomException;
 import com.example.Cheminova.JWT.JwtService;
@@ -121,11 +122,10 @@ public class AuthService {
     }
 
     @Transactional
-    public String verifyUser(LoginRequest request) {
+    public LoginResponse verifyUser(LoginRequest request) {
         Users user=userRepository.findByEmail(request.getEmail());
-
-        if(!user.isVerified()){
-            throw new CustomException("Please verify your email first.");
+        if(user==null){
+            throw new CustomException("Email Doesn't Exist");
         }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -133,6 +133,14 @@ public class AuthService {
                         request.getPassword())
         );
 
-        return jwtService.generateKey(user.getEmail());
+        if(!user.isVerified()){
+            throw new CustomException("Please verify your email first.");
+        }
+
+        String token=jwtService.generateKey(user.getEmail());
+        LoginResponse response=new LoginResponse();
+        response.setToken(token);
+        response.setRole(user.getRole());
+        return response;
     }
 }

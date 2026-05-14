@@ -2,6 +2,7 @@ package com.example.Cheminova.Controller;
 
 import com.example.Cheminova.DTOs.Request.LoginRequest;
 import com.example.Cheminova.DTOs.Request.RegisterRequest;
+import com.example.Cheminova.DTOs.Response.LoginResponse;
 import com.example.Cheminova.JWT.JwtService;
 import com.example.Cheminova.Service.AuthService;
 import com.example.Cheminova.Service.TokenBlacklistService;
@@ -45,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         return ResponseEntity.ok(authService.verifyUser(request));
     }
 
