@@ -39,7 +39,7 @@ public class SwaggerConfig {
                 .servers(
                         List.of(
                                 new Server()
-                                        .url("https://cheminova-ai-production.up.railway.app")
+                                        .url("https://cheminova-ai-backend.onrender.com")
                                         .description("Production Server"),
                                 new Server()
                                         .url("http://localhost:9215")

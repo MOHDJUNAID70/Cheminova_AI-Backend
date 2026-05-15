@@ -22,7 +22,6 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all-courses")
     public Page<CourseResponse> getAllCourses(
             @RequestParam(defaultValue = "1", required = false) int page,
@@ -60,14 +59,14 @@ public class CourseController {
         return new ResponseEntity<>("Course deleted successfully", HttpStatus.OK);
     }
 
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping("/{id}/rate")
     public ResponseEntity<?> rateCourse(@PathVariable Integer id,
                                         @RequestBody RatingRequest request) {
         return courseService.updateRating(id, request);
     }
 
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping("/{id}/enroll")
     public ResponseEntity<?> enrollStudent(@PathVariable Integer id) {
         return courseService.enrollStudent(id);
