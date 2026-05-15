@@ -59,6 +59,15 @@ public class UserService {
     }
 
     @Transactional
+    public void activeUser(Integer id) {
+        Users user=userRepository.findById(id).orElseThrow(
+                ()-> new CustomException("User not found with user_id: " + id)
+        );
+        user.setStatus(UserStatus.ACTIVE);
+        userRepository.save(user);
+    }
+
+    @Transactional
     public void deleteAccount(String name, String token) {
         Users user=userRepository.findByEmail(name);
 
@@ -73,4 +82,5 @@ public class UserService {
         Specification<Users> spec= UsersSpecification.getSpecification(name, minAge, maxAge, role, status);
         return userRepository.findAll(spec, pageable).map(userMapper::toUserDetailToAdmin);
     }
+
 }

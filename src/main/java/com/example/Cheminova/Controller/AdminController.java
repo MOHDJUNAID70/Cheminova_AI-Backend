@@ -86,4 +86,11 @@ public class AdminController {
         return ResponseEntity.ok("User Profile Deactivated successfully");
     }
 
+    @PostMapping("/activate-user")
+    public ResponseEntity<String> activeUser(@RequestParam("Id") Integer id) {
+        userService.activeUser(id);
+        return ResponseEntity.ok("User Profile Activated successfully");
+    }
+
+
 }
